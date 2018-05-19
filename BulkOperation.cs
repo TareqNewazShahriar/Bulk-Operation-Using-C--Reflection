@@ -2,7 +2,6 @@ public class ModelProcssing<T> : BaseContext where T : class
 {
     #region Fields
 
-    //Dictionary<string, object> parameters = null;
     List<SqlParameter> parameters = null;
     List<PropertyInfo> properties = null;
     IEnumerable<string> propNames = null;
@@ -209,13 +208,6 @@ public class ModelProcssing<T> : BaseContext where T : class
                 ),  // Param 6
                 string.IsNullOrEmpty(primaryKeyColName) == false ? "OUTPUT Inserted." + primaryKeyColName : ""  // Param 7
             );
-
-
-        //if ()
-        //    sqlStatement += ;
-
-
-        //sqlStatement += ";";
     }
 
     #endregion Private Methods
