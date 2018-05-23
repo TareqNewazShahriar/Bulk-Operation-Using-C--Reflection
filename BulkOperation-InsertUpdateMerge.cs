@@ -1,4 +1,4 @@
-public class ModelProcssing<T> : BaseContext where T : class
+public class BulkOperation_InsertUpdateMerge<T> : BaseContext where T : class
 {
     #region Fields
 
@@ -23,7 +23,7 @@ public class ModelProcssing<T> : BaseContext where T : class
     /// 2. Auto incremented primary col doesn't end with '_PK' then need to pass : "col_name" [string]
     /// 3. PK col name is not auto incremented then skip this parameter</param>
     /// <param name="_db">Pass the db entities object which generally instantiated on VMBase</param>
-    public PriceUpdateModelProcssing(object autoPk = null, DBEntities _db = null)
+    public BulkOperation_InsertUpdateMerge(object autoPk = null, DBEntities _db = null)
         : base(_db ?? new DBEntities())
     {
         Type type = typeof(T);
@@ -42,7 +42,7 @@ public class ModelProcssing<T> : BaseContext where T : class
     /// 2. Auto incremented primary col doesn't end with '_PK' then need to pass : "col_name" [string]
     /// 3. PK col name is not auto incremented then skip this parameter</param>
     /// <param name="_db">Pass the db entities object which generally instantiated on VMBase</param>
-    public PriceUpdateModelProcssing(string[] colsForUnique, object autoPk = null, DBEntities _db = null)
+    public BulkOperation_InsertUpdateMerge(string[] colsForUnique, object autoPk = null, DBEntities _db = null)
         : base(_db ?? new DBEntities())
     {
         this.colsForUnique = colsForUnique;
