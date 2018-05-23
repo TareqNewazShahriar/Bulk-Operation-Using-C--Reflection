@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace Bulk_Operation_Using_CSharp_Reflection
+namespace CsvGenerator
 {
 	class Program
 	{
@@ -64,4 +62,3 @@ namespace Bulk_Operation_Using_CSharp_Reflection
 		public DateTime DOB { get; set; }
 	}
 }
-
