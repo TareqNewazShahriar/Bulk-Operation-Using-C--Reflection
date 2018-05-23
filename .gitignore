@@ -2,6 +2,6 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/Sample_Project/.vs/Bulk-Operation-Using-CSharp-Reflection/v15
+/Sample_Project/.vs
 /Sample_Project/Bulk-Operation-Using-CSharp-Reflection/bin
 /Sample_Project/Bulk-Operation-Using-CSharp-Reflection/obj

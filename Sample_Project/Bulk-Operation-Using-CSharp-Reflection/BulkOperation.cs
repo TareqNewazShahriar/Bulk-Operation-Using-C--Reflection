@@ -6,21 +6,27 @@ using System.Reflection;
 
 public class BulkOperation<T>
 {
-    #region Fields
+	#region Fields
 
+	private List<T> list = null;
     private List<PropertyInfo> properties = null;
+	private List<object> processedItems = null;
 
-	Action<T> _forEach;
-	Action<List<T>> _atEnd;
+	Func<List<object>, object> _forEachItem;
+	Func<List<object>, List<PropertyInfo>, dynamic> _atEnd;
     
     #endregion Fields
 
     #region Constructors
 
-    public BulkOperation(List<T> list, Action<T> ForEach, Action<List<T>> AtEnd)
+    public BulkOperation(List<T> list, Func<List<object>, List<PropertyInfo>, dynamic> AtEnd, Func<List<object>, object> EachValue = null)
 	{
-		this._forEach = ForEach;
+		this._forEachItem = EachValue;
 		this._atEnd = AtEnd;
+
+		this.list = list;
+		properties = new List<PropertyInfo>();
+		processedItems = new List<object>();
 
         InitPropObject(typeof(T));
     }
@@ -29,6 +35,13 @@ public class BulkOperation<T>
 
     #region Public Methods
 	
+	public dynamic Process()
+	{
+		ForEachItem(list);
+
+		return _atEnd?.Invoke(processedItems, properties);
+	}
+
     #endregion Public Methods
 
     #region Private Methdos
@@ -39,10 +52,21 @@ public class BulkOperation<T>
 		properties = _type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).ToList();
     }
 
+	private void ForEachItem(List<T> list)
+	{
+		foreach (var item in list)
+		{
+			if (_forEachItem != null)
+				processedItems.Add(_forEachItem(GetValues(item)));
+			else
+				processedItems.Add(GetValues(item));
+		}
+	}
+
     private List<object> GetValues(T obj)
     {
         object val = null;
-		var values = new List<object>();
+		var valueList = new List<object>();
         // get values from the model
         foreach (var s in properties)
         {
@@ -55,10 +79,10 @@ public class BulkOperation<T>
                 val = DBNull.Value;
             }
 
-			values.Add(val);
+			valueList.Add(val);
         }
 
-		return values;
+		return valueList;
     }
 	
     #endregion Private Methods
