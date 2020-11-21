@@ -4,9 +4,8 @@ using System.Linq;
 using System.Reflection;
 
 /// <summary>
-/// Bulk Operaion
-/// Author: Tareq Newaz Shahriar
-/// Licence: Apache License 2.0
+/// Bulk Operaion v2.0
+/// Apache License 2.0
 /// Repo: github.com/TareqNewazShahriar/Bulk-Operation-Using-CSharp-Reflection
 /// </summary>
 namespace BulkOperation

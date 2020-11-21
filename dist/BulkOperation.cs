@@ -2,46 +2,62 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
-namespace CsvGenerator
+/// <summary>
+/// Bulk Operaion v2.0
+/// Apache License 2.0
+/// Repo: github.com/TareqNewazShahriar/Bulk-Operation-Using-CSharp-Reflection
+/// </summary>
+namespace BulkOperation
 {
-	public class BulkOperation<T>
+    /// <summary>
+    /// A class to traverse and to do operations on a collection of complex objects.
+    /// It will prepare the property information and values of each property using reflexion
+    /// for the operation.
+    /// </summary>
+    /// <typeparam name="T">Complex type to process</typeparam>
+    /// <typeparam name="TResult">Resultant type</typeparam>
+    public class BulkOperation<T, TResult> 
+		where T : class
+		where TResult : class
 	{
 		#region Fields
 
 		private List<T> list = null;
 		private List<PropertyInfo> properties = null;
-		private List<object> processedItems = null;
+		private List<TResult> processedItems = null;
 
-		Func<List<object>, object> _forEachItem;
-		Func<List<object>, List<PropertyInfo>, dynamic> _atEnd;
+		Func<List<object>, List<PropertyInfo>, TResult> _ProcessEachItem;
+		Func<List<TResult>, List<PropertyInfo>, TResult> _Finally;
 
 		#endregion Fields
 
-		#region Constructors
+		#region Constructor
 
-		public BulkOperation(List<T> list, Func<List<object>, List<PropertyInfo>, dynamic> AtEnd, Func<List<object>, object> EachValue = null)
+		public BulkOperation(List<T> list, Func<List<object>, List<PropertyInfo>, TResult> processEachItems, Func<List<TResult>, List<PropertyInfo>, TResult> AtEnd)
 		{
-			this._forEachItem = EachValue;
-			this._atEnd = AtEnd;
+			this._ProcessEachItem = processEachItems;
+			this._Finally = AtEnd;
 
 			this.list = list;
 			properties = new List<PropertyInfo>();
-			processedItems = new List<object>();
+			processedItems = new List<TResult>();
 
 			InitPropObject(typeof(T));
 		}
 
-		#endregion Constructors
+		#endregion Constructor
 
 		#region Public Methods
 
-		public dynamic Process()
+		public TResult Process()
 		{
-			ForEachItem(list);
+			foreach (var item in list)
+			{
+				processedItems.Add(_ProcessEachItem(GetValues(item), properties));
+			}
 
-			return _atEnd?.Invoke(processedItems, properties);
+			return _Finally.Invoke(processedItems, properties);
 		}
 
 		#endregion Public Methods
@@ -52,17 +68,6 @@ namespace CsvGenerator
 		{
 			// take only native and public proeperties
 			properties = _type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly).ToList();
-		}
-
-		private void ForEachItem(List<T> list)
-		{
-			foreach (var item in list)
-			{
-				if (_forEachItem != null)
-					processedItems.Add(_forEachItem(GetValues(item)));
-				else
-					processedItems.Add(GetValues(item));
-			}
 		}
 
 		private List<object> GetValues(T obj)
